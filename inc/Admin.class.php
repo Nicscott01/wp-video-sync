@@ -17,10 +17,21 @@ class Admin
     public function __construct()
     {
 
+
+
         add_action('add_meta_boxes', [$this, 'add_meta_boxes']);
 
         add_action('save_post', [$this, 'save_post_meta']);
 
+
+        if ( function_exists( 'learndash_get_post_type_slug' ) ) {
+            
+            add_filter( 'bulk_actions-edit-' . learndash_get_post_type_slug('course'), [ $this, 'bulk_actions_force_update' ] );
+
+            add_filter('handle_bulk_actions-edit-'. learndash_get_post_type_slug('course'), [ $this, 'handle_bulk_actions_force_update' ], 10, 3 );
+
+            add_action( 'admin_notices', [ $this, 'admin_notices' ] );
+        }
 
     }
 
@@ -88,14 +99,80 @@ class Admin
 
         if (isset($_POST['_album_url']) && !empty($_POST['_album_url'])) {
 
-            update_post_meta( $post_id, '_album_url', $_POST['_album_url']);
+            $album_url = sanitize_text_field( $_POST['_album_url']);
 
-            $AlbumSync = new \WPVS\AlbumSync( sanitize_text_field( $_POST['_album_url'] ), $post_id );
+            update_post_meta( $post_id, '_album_url', $album_url );
+
+            $AlbumSync = new \WPVS\AlbumSync( $album_url, $post_id );
             
         }
 
     }
 
+
+
+
+    /**
+     *  Add the bulk action to force an update
+     * 
+     */
+
+     public function bulk_actions_force_update( $bulk_actions ) {
+
+        $bulk_actions['wpvs_force_update'] = __( 'Force Update Video Showcase' );
+
+        return $bulk_actions;
+
+     }
+
+
+
+    /**
+     *  Handler for Bulk Action Force Update
+     * 
+     * 
+     */
+
+    public function handle_bulk_actions_force_update( $redirect_url, $action, $post_ids ) {
+
+        if ( $action == 'wpvs_force_update' ) {
+
+            foreach( $post_ids as $post_id ) {
+
+                $video_album = get_post_meta( $post_id, '_album_url', true );
+
+                new AlbumSync( $video_album, $post_id, true );
+
+                error_log( 'Triggered bulk action to force update post ' . $post_id . ' with album ' . $video_album );
+
+            }
+
+            $redirect_url = add_query_arg( 'scheduled_force_update', count( $post_ids ), $redirect_url );
+
+        }
+
+        return $redirect_url;
+    }
+
+
+
+    /**
+     *  Display Admin Notices
+     * 
+     * 
+     */
+
+    public function admin_notices() {
+
+        if ( isset( $_REQUEST['scheduled_force_update' ] ) && !empty( $_REQUEST['scheduled_force_update'] ) )  {
+
+            $num_changed = (int) $_REQUEST['scheduled_force_update' ];
+
+            printf( '<div id="wpvs-admin-notice-force-update" class="updated notice is-dismissable"><p>' . __( 'Scheduled %d posts to do forced sync.' ) . '</p></div>', $num_changed  );
+
+        }
+
+    }
 
 
 

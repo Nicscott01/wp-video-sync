@@ -9,6 +9,7 @@ class AlbumSync extends Sync {
     public $album_post;
     public $album_data;
     public $videos_to_update = [];
+    public $force_update = false;
 
 
 
@@ -20,9 +21,16 @@ class AlbumSync extends Sync {
      * 
      */
 
-    public function __construct( $uri = '', $course_id = '' ) {
+    public function __construct( $uri = '', $course_id = '', $force = false ) {
         
         parent::__construct( $uri, $course_id );
+
+        if ( $force == true ) {
+
+            $this->force_update = true;
+
+
+        }
 
 
         if ( !empty( $this->uri ) && !empty( $this->course_id ) ) {
@@ -43,7 +51,9 @@ class AlbumSync extends Sync {
 
         $this->get_vimeo_id_from_url()->get_album_post()->check_album_data()->maybe_schedule_updates();
 
-        error_log( 'Finished running album_sync_init on course_id=' . $this->course_id );
+        $message = sprintf( 'Finished running %s album_sync_init on course_id=%d', $this->force_update == true ? 'forced' : 'standard', $this->course_id  );
+
+        error_log( $message );
             
     }
 
@@ -127,7 +137,8 @@ class AlbumSync extends Sync {
 
         $this->videos_to_update = [];
 
-        if ( is_array( $this->album_data ) ) {
+
+        if ( !$this->force_update && is_array( $this->album_data ) ) {
 
             foreach( $this->album_data as $key => $data ) {
 

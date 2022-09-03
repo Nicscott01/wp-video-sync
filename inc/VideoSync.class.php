@@ -224,7 +224,8 @@ class VideoSync extends Sync
             'post_title' => sanitize_text_field(WPVS_Vimeo()->get_video_obj_value('name')),
             'post_excerpt' => sanitize_text_field(WPVS_Vimeo()->get_video_obj_value('description')),
             'meta_input' => [
-                '_video_uri' => sanitize_text_field(WPVS_Vimeo()->get_video_obj_value('uri'))
+                '_video_uri' => sanitize_text_field(WPVS_Vimeo()->get_video_obj_value('uri')),
+                '_video_duration' => sanitize_text_field(WPVS_Vimeo()->get_video_obj_value('duration'))
             ]
         ];
 
@@ -262,7 +263,7 @@ class VideoSync extends Sync
         $this->save_poster_image($lesson_id);
 
         return $this;
-        
+
     }
 
 
