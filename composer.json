@@ -1,0 +1,14 @@
+{
+    "name": "creare/wp-video-sync",
+    "description": "WP Plugin to sync Vimeo & others to WP",
+    "require": {
+        "vimeo/vimeo-api": "^3.0",
+        "woocommerce/action-scheduler": "^3.5"
+    },
+    "authors": [
+        {
+            "name": "Nic",
+            "email": "nic@crearewebsolutions.com"
+        }
+    ]
+}
