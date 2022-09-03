@@ -96,7 +96,7 @@ class VideoSync extends Sync
                 ], [
                     'key' => '_sfwd-lessons',
                     'value' => $this->video_id,
-                    'compare' => 'EXISTS'
+                    'compare' => 'LIKE'
                 ]
             ]
         ]);

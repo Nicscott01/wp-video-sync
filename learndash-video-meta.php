@@ -95,7 +95,7 @@ add_action('init', function () {
 
         echo 'Video Sync Test';
 
-        $VideoSync = new WPVS\VideoSync('/videos/692913012', '8');
+        $VideoSync = new WPVS\VideoSync('/videos/536092033', '5');
 
         echo '<pre>';
         var_dump($VideoSync);
