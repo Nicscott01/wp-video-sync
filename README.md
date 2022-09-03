@@ -7,4 +7,5 @@ This was started to take care of keeping video content up to date on LearnDash L
 - (Option) Sync/Map tags to WP/Learndash Cats & Tags
 - (Option) Order the lessons as the showcase shows the videos
 - (Option) update domain embed settings
+- (Option) Choice of saving image with play button vs w/o playbutton -- or maybe that's just up to CSS styling on the front end (use your own play button)
 
