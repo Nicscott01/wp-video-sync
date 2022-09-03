@@ -21,6 +21,7 @@ if (!defined('ABSPATH')) {
 include(__DIR__ . '/vendor/autoload.php');
 
 //Load our files
+include(__DIR__ . '/inc/Admin.class.php');
 include(__DIR__ . '/inc/VimeoClient.class.php');
 include(__DIR__ . '/inc/Scheduler.class.php');
 include(__DIR__ . '/inc/Sync.class.php');
@@ -51,56 +52,6 @@ WPVS_Scheduler();
 
 
 
-
-
-
-add_action('add_meta_boxes', function () {
-
-    add_meta_box(
-        'vimeo-collection-test',
-        __('Vimeo Collection Settings Test'),
-        'album_metabox',
-        ['sfwd-courses'],
-        'advanced',
-        'high',
-        []
-    );
-
-
-}, 20);
-
-
-function album_metabox()
-{
-
-    global $post;
-
-    $value = get_post_meta( $post->ID, '_album_url', true );
-
-?>
-    <div class="album sfwd sfwd_options ">
-        <label for="album-url">Showcase URL</label>
-        <input id="album-url" type="text" name="_album_url" value="<?php echo $value ?>" placeholder="Vimeo Showcase URL">
-    </div>
-<?php
-
-}
-
-
-/**
- *  Save the Album URL
- * 
- */
-
-add_action( 'save_post', function( $post_id ) {
-
-    if ( isset( $_POST['_album_url'] ) && !empty( $_POST['_album_url'] ) ) {
-
-        update_post_meta( $post_id, '_album_url', $_POST['_album_url'] ); 
-
-    }
-
-});
 
 
 
